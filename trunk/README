@@ -4,6 +4,19 @@ This module implements various voting algorithms.  Care has been taken to
 thoroughly test these implementations; nonetheless, this code is for
 educational and entertainment purposes only--USE AT YOUR OWN RISK.
 
+Currently implemented voting systems:
+
+   Single-winner systems:
+      Plurality
+      Instant Runoff
+      Approval
+
+   Multiple-winner systems:
+
+
+
+
+
 INSTALLATION
 
 To install this module, run the following commands:
