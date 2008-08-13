@@ -3,50 +3,21 @@ package Algorithm::Voting;
 use warnings;
 use strict;
 
-=head1 NAME
-
-Algorithm::Voting - The great new Algorithm::Voting!
-
-=head1 VERSION
-
-Version 0.01
-
-=cut
-
 our $VERSION = '0.01';
 
+1;
+
+=pod
+
+=head1 NAME
+
+Algorithm::Voting - implementations of various voting algorithms
 
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
-
-Perhaps a little code snippet.
-
-    use Algorithm::Voting;
-
-    my $foo = Algorithm::Voting->new();
-    ...
-
-=head1 EXPORT
-
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
-
-=head1 FUNCTIONS
-
-=head2 function1
-
-=cut
-
-sub function1 {
-}
-
-=head2 function2
-
-=cut
-
-sub function2 {
-}
+    use Algorithm::Voting::Ballot;
+    use Algorithm::Voting::Borda;
+    my $box = Algorithm::Voting->new();
 
 =head1 AUTHOR
 
@@ -54,19 +25,17 @@ johntrammell@gmail.com, C<< <johntrammell at gmail.com> >>
 
 =head1 BUGS
 
-Please report any bugs or feature requests to C<bug-algorithm-voting at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Algorithm-Voting>.  I will be notified, and then you'll
-automatically be notified of progress on your bug as I make changes.
-
-
-
+Please report any bugs or feature requests to C<bug-algorithm-voting at
+rt.cpan.org>, or through the web interface at
+L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Algorithm-Voting>.  I will be
+notified, and then you'll automatically be notified of progress on your bug as
+I make changes.
 
 =head1 SUPPORT
 
 You can find documentation for this module with the perldoc command.
 
     perldoc Algorithm::Voting
-
 
 You can also look for information at:
 
@@ -90,7 +59,6 @@ L<http://search.cpan.org/dist/Algorithm-Voting>
 
 =back
 
-
 =head1 ACKNOWLEDGEMENTS
 
 
@@ -98,10 +66,10 @@ L<http://search.cpan.org/dist/Algorithm-Voting>
 
 Copyright 2008 johntrammell@gmail.com, all rights reserved.
 
+This software is intended for educational and entertainment purposes only.
+
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
 
-
 =cut
 
-1; # End of Algorithm::Voting
