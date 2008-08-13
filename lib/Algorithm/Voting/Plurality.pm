@@ -126,5 +126,11 @@ sub count {
     return sum values %{ $self->tally() };
 }
 
+sub results {
+
+
+
+}
+
 1;
 
