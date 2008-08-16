@@ -47,19 +47,24 @@ applicable to other cases.
 =cut
 
 sub new {
-
-
-
+    my $class = shift;
+    bless {}, $class;
 }
+
+=head2 $obj->make_key($source)
+
+=cut
 
 sub make_key {
     my $self = shift;
     my @key;
-    for $k in (@_) {
+    for my $k (@_) {
         if (reftype($k) eq 'ARRAY') {
             $key .= @$k;
         }
     }
     return join q(/), @key;
 }
+
+1;
 
