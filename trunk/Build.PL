@@ -1,13 +1,11 @@
 use strict;
 use warnings;
 use Module::Build;
-use elc;
 
 my $builder = Module::Build->new(
     module_name => 'Algorithm::Voting',
     license     => 'perl',
-    dist_author =>
-        'Holmescorp Software Dev Team <softwaredevelopment@holmescorp.com>',
+    dist_author => 'John Trammell <johntrammell@gmail.com>',
     dist_version_from => 'lib/Algorithm/Voting.pm',
     requires => {
         'List::Util'        => 0,
