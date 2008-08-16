@@ -1,9 +1,12 @@
 #!perl -T
 
-use Test::More tests => 1;
+use Test::More tests => 3;
 
 BEGIN {
-	use_ok( 'Algorithm::Voting' );
+    use_ok('Algorithm::Voting');
+    use_ok('Algorithm::Voting::Ballot');
+    use_ok('Algorithm::Voting::Sortition');
 }
 
-diag( "Testing Algorithm::Voting $Algorithm::Voting::VERSION, Perl $], $^X" );
+diag("Testing Algorithm::Voting $Algorithm::Voting::VERSION, Perl $], $^X");
+
