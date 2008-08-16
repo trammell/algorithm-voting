@@ -5,6 +5,7 @@ use Test::More tests => 3;
 BEGIN {
     use_ok('Algorithm::Voting');
     use_ok('Algorithm::Voting::Ballot');
+    use_ok('Algorithm::Voting::Plurality');
     use_ok('Algorithm::Voting::Sortition');
 }
 

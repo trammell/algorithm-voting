@@ -9,6 +9,7 @@ my $builder = Module::Build->new(
     dist_version_from => 'lib/Algorithm/Voting.pm',
     requires => {
         'List::Util'        => 0,
+	'Params::Validate'  => 0,
     },
     build_requires    => {
         'base'              => 0,
@@ -22,6 +23,7 @@ my $builder = Module::Build->new(
         'Test::More'        => 0,
         'Test::Exception'   => 0,
     },
+    recursive_test_files => 1,
     add_to_cleanup => [ 'Algorithm-Voting-*', '*.bak' ],
 );
 
