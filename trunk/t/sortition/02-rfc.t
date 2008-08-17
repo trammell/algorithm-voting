@@ -1,6 +1,8 @@
 # $Id$
 # $URL$
 
+use strict;
+use warnings;
 use Test::More 'no_plan';
 
 use_ok('Algorithm::Voting::Sortition');
@@ -16,7 +18,7 @@ use_ok('Algorithm::Voting::Sortition');
 #   9. Handsome     19. Chastity
 #  10. Cassandra    20. Smith
 
-my @candidates = qw/
+my @c = qw/
     John Mary Bashful Dopey Sleepy
     Grouchy Doc Sneazy Handsome Cassandra
     Pollyanna Pendragon Pandora Faith Hope
@@ -26,7 +28,7 @@ my @candidates = qw/
 
 my $key = q(9319./2.5.8.10.12./9.18.26.34.41.45./);
 
-my $box = Algorithm::Voting::Sortition(candidates => \@c, key => $key);
+my $box = Algorithm::Voting::Sortition->new(candidates => \@c, key => $key);
 
 print $box->results->as_string;
 

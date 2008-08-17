@@ -89,6 +89,10 @@ sub new {
     return $self;
 }
 
+=head2 candidates
+
+=cut
+
 sub candidates {
     my $self = shift;
     if ($self->{candidates}) {
@@ -97,6 +101,10 @@ sub candidates {
     return;
 }
 
+=head2 add
+
+=cut
+
 sub add {
     my ($self, $ballot) = @_;
     $self->validate_ballot($ballot);
@@ -104,10 +112,18 @@ sub add {
     return $self->count;
 }
 
+=head2 increment_tally
+
+=cut
+
 sub increment_tally {
     my ($self, $candidate) = @_;
     $self->tally->{$candidate} += 1;
 }
+
+=head2 validate_ballot
+
+=cut
 
 sub validate_ballot {
     my ($self, $ballot) = @_;
@@ -121,10 +137,18 @@ sub validate_ballot {
     }
 }
 
+=head2 count
+
+=cut
+
 sub count {
     my $self = shift;
     return sum values %{ $self->tally() };
 }
+
+=head2 results
+
+=cut
 
 sub results {
 
