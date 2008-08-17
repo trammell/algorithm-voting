@@ -1,6 +1,6 @@
 #!perl -T
 
-use Test::More tests => 3;
+use Test::More tests => 4;
 
 BEGIN {
     use_ok('Algorithm::Voting');
