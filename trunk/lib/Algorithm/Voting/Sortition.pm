@@ -1,7 +1,11 @@
 
 package Algorithm::Voting::Sortition;
 
+use strict;
+use warnings;
 use Scalar::Util 'reftype';
+use Digest::MD5 'md5_hex';
+use bigint;
 
 =pod
 
@@ -51,19 +55,39 @@ sub new {
     bless {}, $class;
 }
 
-=head2 $obj->make_key($source)
+=head2 $obj->make_key(@source)
+
+Stringify elements of C<@source> to create a master key.
 
 =cut
 
 sub make_key {
-    my $self = shift;
-    my @key;
-    for my $k (@_) {
-        if (reftype($k) eq 'ARRAY') {
-            $key .= @$k;
+    my ($self, @source) = @_;
+    my $key;
+    for my $s (@source) {
+        if (reftype($s) && reftype($s) eq 'ARRAY') {
+            $key .= $self->_compound_key(@$s);
+        }
+        else {
+            $key .= "$s./";
         }
     }
-    return join q(/), @key;
+    return $key;
+}
+
+sub _compound_key {
+    my ($self, @source) = @_;
+    @source = sort { $a <=> $b } @source;
+    my $key;
+    $key .= "$_." for @source;
+    return "$key/";
+}
+
+sub results {
+
+    Algorithm::Voting::Result->new()
+
+
 }
 
 1;
