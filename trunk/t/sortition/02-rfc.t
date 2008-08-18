@@ -54,5 +54,5 @@ is (Algorithm::Voting::Sortition->make_key(@source), $key);
 # return 5 winners, using key $key
 my $box = Algorithm::Voting::Sortition->new(candidates => \@c, key => $key, n => 5);
 
-print $box->results->as_string;
+print $box->result->as_string;
 
