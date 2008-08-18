@@ -6,6 +6,7 @@ use warnings;
 use Scalar::Util 'reftype';
 use Digest::MD5 'md5_hex';
 use bigint;
+use Algorithm::Voting::Result;
 
 =pod
 
@@ -83,11 +84,12 @@ sub _compound_key {
     return "$key/";
 }
 
-sub results {
+sub result {
 
-    Algorithm::Voting::Result->new()
+    # FIXME: need to come up with a better term than "summary" or "data"...
+    my $r = Algorithm::Voting::Result->new(formatter => __PACKAGE__);
 
-
+    return $r;
 }
 
 1;
