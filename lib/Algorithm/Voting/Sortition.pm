@@ -18,8 +18,8 @@ Nominations Committee (NomCom) Random Selection"
 =head1 SYNOPSIS
 
     use Algorithm::Voting::Sortition;
-    my @c = qw/ fred wilma pebbles barney betty bamm-bamm /;
-    my $box = Algorithm::Voting::Sortition->new(candidates = \@c);
+    my @cand = qw/ fred wilma barney betty /;
+    my $box = Algorithm::Voting::Sortition->new(candidates = \@cand);
     my @keysrc = (
         [32,40,43,49,53,21],    # powerball numbers on 9 Aug 2008
         11,                     # number of gold medals Phelps has won
@@ -83,6 +83,12 @@ sub _compound_key {
     $key .= "$_." for @source;
     return "$key/";
 }
+
+=head2 $obj->result
+
+Returns an object of type Algorithm::Voting::Result containing the contest results.
+
+=cut
 
 sub result {
 
