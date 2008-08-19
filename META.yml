@@ -2,18 +2,24 @@
 name: Algorithm-Voting
 version: 0.01
 author:
-  - 'Holmescorp Software Dev Team <softwaredevelopment@holmescorp.com>'
-abstract: The great new Algorithm::Voting!
+  - 'John Trammell <johntrammell@gmail.com>'
+abstract: implementations of various voting algorithms
 license: perl
 resources:
   license: http://dev.perl.org/licenses/
 requires:
+  Data::Dumper: 0
+  Digest::MD5: 0
   List::Util: 0
+  Math::BigInt: 0
+  Params::Validate: 0
+  Scalar::Util: 0
 build_requires:
   Carp: 0
   Class::Accessor: 0
   Data::Dumper: 0
   List::Util: 0
+  Module::Build::Compat: 0
   Test::Exception: 0
   Test::More: 0
   base: 0
@@ -24,6 +30,14 @@ provides:
   Algorithm::Voting:
     file: lib/Algorithm/Voting.pm
     version: 0.01
+  Algorithm::Voting::Ballot:
+    file: lib/Algorithm/Voting/Ballot.pm
+  Algorithm::Voting::Plurality:
+    file: lib/Algorithm/Voting/Plurality.pm
+  Algorithm::Voting::Result:
+    file: lib/Algorithm/Voting/Result.pm
+  Algorithm::Voting::Sortition:
+    file: lib/Algorithm/Voting/Sortition.pm
 generated_by: Module::Build version 0.280802
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html

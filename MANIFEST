@@ -6,10 +6,16 @@ lib/Algorithm/Voting/Ballot.pm
 lib/Algorithm/Voting/Borda.pm
 lib/Algorithm/Voting/InstantRunoff.pm
 lib/Algorithm/Voting/Plurality.pm
+lib/Algorithm/Voting/Result.pm
+lib/Algorithm/Voting/Sortition.pm
 Makefile.PL
 MANIFEST
+META.yml
 README
 t/00-load.t
 t/_pod.t
 t/_pod_coverage.t
-META.yml
+t/plurality/01-simple.t
+t/plurality/02-restricted.t
+t/sortition/01-key.t
+t/sortition/02-rfc.t
