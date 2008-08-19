@@ -5,8 +5,8 @@ use strict;
 use warnings;
 use Scalar::Util 'reftype';
 use Digest::MD5 'md5_hex';
-use bigint;
-use Algorithm::Voting::Result;
+use Math::BigInt;
+use Params::Validate 'validate';
 
 =pod
 
@@ -19,7 +19,7 @@ Nominations Committee (NomCom) Random Selection"
 
     use Algorithm::Voting::Sortition;
     my @cand = qw/ fred wilma barney betty /;
-    my $box = Algorithm::Voting::Sortition->new(candidates = \@cand);
+    my $box = Algorithm::Voting::Sortition->new(candidates => \@cand);
     my @keysrc = (
         [32,40,43,49,53,21],    # powerball numbers on 9 Aug 2008
         11,                     # number of gold medals Phelps has won
@@ -53,16 +53,33 @@ applicable to other cases.
 
 sub new {
     my $class = shift;
-    bless {}, $class;
+    my %valid = (
+        candidates => 1,
+        n          => { default => -1 },
+        source     => 0,
+        keystring  => 0,
+    );
+    my %args = validate(@_, \%valid);
+    return bless \%args, $class;
 }
 
-=head2 $obj->make_key(@source)
+=head2 $obj->candidates
 
-Stringify elements of C<@source> to create a master key.
+Returns a list containing the current candidates.
 
 =cut
 
-sub make_key {
+sub candidates {
+    return @{ $_[0]->{candidates} };
+}
+
+=head2 $obj->keystring([@source])
+
+Stringify elements of C<@source> to create a master "key string".
+
+=cut
+
+sub keystring {
     my ($self, @source) = @_;
     my $key;
     for my $s (@source) {
@@ -84,18 +101,56 @@ sub _compound_key {
     return "$key/";
 }
 
+=head2 $obj->seq
+
+Generates a sequence of integers based on the MD5 sum of the key.  These
+integers are used to choose the winners from the candidate pool.
+
+=cut
+
+sub seq {
+    my $self = shift;
+    my $n = ($self->{n} < 1) ? scalar($self->candidates) : $self->{n};
+    map {
+        my $p = $self->prefix($_);
+        my $hex = md5_hex($p . $self->keystring . $p);
+        my $bi = Math::Bigint->new("0x${hex}");
+    } 1 .. $n;
+}
+
+sub prefix {
+    my ($self,$n) = @_;
+    return pack("n",$n);  # little-endian, 2-byte ("short int")
+}
+
 =head2 $obj->result
 
-Returns an object of type Algorithm::Voting::Result containing the contest results.
+Returns the data structure containing the contest results.
 
 =cut
 
 sub result {
+    my $self = shift;
+    my @c = $self->candidates;
+    for my $i ($self->seq) {
+        my $choice = $i
 
-    # FIXME: need to come up with a better term than "summary" or "data"...
-    my $r = Algorithm::Voting::Result->new(formatter => __PACKAGE__);
 
-    return $r;
+    }
+
+    return;
+}
+
+=head2 $obj->as_string
+
+Delegates formatting to class C<< $obj->formatter >>.
+
+=cut
+
+sub as_string {
+    my $self = shift;
+    
+
 }
 
 1;
