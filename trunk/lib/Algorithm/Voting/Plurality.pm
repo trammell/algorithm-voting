@@ -8,6 +8,7 @@ use warnings;
 use base 'Class::Accessor::Fast';
 use List::Util 'sum';
 use Params::Validate 'validate', 'ARRAYREF';
+use Algorithm::Voting::Result;
 
 __PACKAGE__->mk_accessors(qw/ tally /);
 
@@ -146,14 +147,17 @@ sub count {
     return sum values %{ $self->tally() };
 }
 
-=head2 results
+=head2 $obj->result
 
 =cut
 
-sub results {
-
-
-
+sub result {
+    my $self = shift;
+    my $r = Algorithm::Voting::Result->new(
+    	formatter => __PACKAGE__,
+	summary => $self->tally,
+    );
+    return $r;
 }
 
 1;

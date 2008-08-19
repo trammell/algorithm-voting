@@ -1,5 +1,6 @@
 
 use Test::More 'no_plan';
+use Data::Dumper;
 
 use_ok('Algorithm::Voting::Plurality');
 use_ok('Algorithm::Voting::Ballot');
@@ -26,6 +27,6 @@ is($box->count,4);
 ok($box->add($ballot->('frank')));
 is($box->count,5);
 
-is_deeply($box->result, { frank => 3, mary => 2 })
+is_deeply($box->result->summary, { frank => 3, mary => 2 }) or diag(Dumper($box));
 
 
