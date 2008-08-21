@@ -31,6 +31,6 @@ is($box->count,5);
 dies_ok { $box->add($ballot->('steve')) } 'dies on invalid candidate';
 is($box->count,5);
 
-is_deeply($box->result->summary, { frank => 2, mary => 2, judy => 1})
+is_deeply($box->result->summary, {frank => 2, mary => 2, judy => 1});
 
 
