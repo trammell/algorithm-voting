@@ -122,7 +122,9 @@ sub add {
     return $self->count;
 }
 
-=head2 increment_tally
+=head2 $box->increment_tally($candidate)
+
+Increments the tally for C<$candidate> by 1.
 
 =cut
 
@@ -131,7 +133,10 @@ sub increment_tally {
     $self->tally->{$candidate} += 1;
 }
 
-=head2 validate_ballot
+=head2 $box->validate_ballot($ballot)
+
+If this election is limited to a list of valid candidates, this method will
+C<die()> if the candidate on C<$ballot> is not one of them.
 
 =cut
 
@@ -148,6 +153,8 @@ sub validate_ballot {
 }
 
 =head2 count
+
+Returns the total number of ballots cast so far.
 
 =cut
 
@@ -182,6 +189,12 @@ sub result {
         sort { $b <=> $a } keys %rev;
 }
 
+=head2 $box->as_string
+
+Returns a string containing the election results.
+
+=cut
+
 sub as_string {
     my $self = shift;
     my $pos = 1;
@@ -191,8 +204,7 @@ sub as_string {
         my ($n, @cand) = @$r;
         my $pct = sprintf '%.2f%%', 100 * $n / $count;
         $string .= sprintf "%3d: ", $pos;
-        $string .= "@cand, $n votes ($pct)";
-        $string .= "\n";
+        $string .= "@cand, $n votes ($pct)\n";
 	$pos++;
     }
     return $string;
