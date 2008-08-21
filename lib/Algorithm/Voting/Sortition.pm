@@ -131,14 +131,24 @@ Returns the data structure containing the contest results.
 
 sub result {
     my $self = shift;
+    unless (exists $self->{result}) {
+	$self->make_result;
+    }
+    return $self->{result};
+}
+
+=head2 $obj->make_result
+
+=cut
+
+sub make_result {
+    my $self = shift;
     my @c = $self->candidates;
     for my $i ($self->seq) {
         my $choice = $i
 
-
     }
-
-    return;
+    $self->{result} = $result;
 }
 
 =head2 $obj->as_string
@@ -149,8 +159,8 @@ Delegates formatting to class C<< $obj->formatter >>.
 
 sub as_string {
     my $self = shift;
-    
-
+    my $fmt_class = $self->formatter; 
+    $fmt_class->as_string($self->result);
 }
 
 1;
