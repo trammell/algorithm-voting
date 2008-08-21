@@ -30,7 +30,7 @@ Algorithm::Voting::Plurality - use "Plurality" to decide the sole winner
     }
 
     # and print the result of the election
-    print $box->result->as_string;
+    print $box->as_string;
 
 =head1 DESCRIPTION
 
@@ -147,17 +147,46 @@ sub count {
     return sum values %{ $self->tally() };
 }
 
-=head2 $obj->result
+=head2 result
+
+The result is a "digested" version of the ballot tally, ordered by the number
+of ballots cast for a candidate.
+
+Returns a list of arrayrefs of the form C<< [ @candidates, $n ] >> where
+C<@candidates> is a list of candidates, and C<$n> is the number of ballots
+cast.
 
 =cut
 
 sub result {
     my $self = shift;
-    my $r = Algorithm::Voting::Result->new(
-    	formatter => __PACKAGE__,
-	summary => $self->tally,
-    );
-    return $r;
+    # %rev is a "reverse" hash, in the sense that the key is the number of
+    # votes, and the value is an arrayref containing the candidates who got
+    # that number of votes.
+    my %rev;
+    foreach my $cand (keys %{ $self->tally }) {
+        my $votes = $self->tally->{$cand};
+        push @{ $rev{$votes} }, $cand;
+    }
+    return
+        map { [ $_, @{$rev{$_}} ] }
+        sort { $b <=> $a } keys %rev;
+}
+
+sub as_string {
+    my $self = shift;
+    my $pos = 1;
+    my $count = $self->count;
+    my $string;
+    foreach my $r ($self->result) {
+        my ($n, @cand) = @$r;
+        my $pct = sprintf '%.2f%%', 100 * $n / $count;
+        $string .= sprintf "%3d: ", $pos;
+        $string .= "@cand, $n votes ($pct)";
+        $string .= "\n";
+	$pos++;
+    }
+    return $string;
 }
 
 1;
