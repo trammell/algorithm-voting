@@ -143,12 +143,15 @@ sub result {
 
 sub make_result {
     my $self = shift;
-    my @c = $self->candidates;
+    my $n = $self->n;
     for my $i ($self->seq) {
         my $choice = $i
 
+
     }
-    $self->{result} = $result;
+    my @c = $self->candidates;
+    my @result = @c[ @indices ];
+    $self->{result} = \@result;
 }
 
 =head2 $obj->as_string
