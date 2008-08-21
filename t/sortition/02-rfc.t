@@ -49,10 +49,10 @@ my @source = (
 
 my $key = q(9319./2.5.8.10.12./9.18.26.34.41.45./);
 
-is (Algorithm::Voting::Sortition->make_key(@source), $key);
+is(Algorithm::Voting::Sortition->make_key(@source), $key);
 
 # return 5 winners, using key $key
 my $box = Algorithm::Voting::Sortition->new(candidates => \@c, key => $key, n => 5);
 
-print $box->result->as_string;
+warn $box->result->as_string;
 
