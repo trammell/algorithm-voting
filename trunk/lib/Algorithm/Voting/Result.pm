@@ -36,13 +36,22 @@ sub summary {
     return $self->{summary};
 }
 
+=head2 $obj->formatter
+
+=cut
+
+sub formatter {
+    my $self = shift;
+    return $self->{formatter};
+}
+
 =head2 $obj->as_string
 
 =cut
 
 sub as_string {
     my $self = shift;
-    $self->formatter($self->summary);
+    $self->formatter->($self->summary);
 }
 
 1;
