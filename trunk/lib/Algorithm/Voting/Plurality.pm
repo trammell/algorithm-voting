@@ -7,7 +7,7 @@ use strict;
 use warnings;
 use base 'Class::Accessor::Fast';
 use List::Util 'sum';
-use Params::Validate 'validate', 'ARRAYREF';
+use Params::Validate qw/ validate validate_pos ARRAYREF /;
 use Algorithm::Voting::Result;
 
 __PACKAGE__->mk_accessors(qw/ tally /);
@@ -25,7 +25,7 @@ Algorithm::Voting::Plurality - use "Plurality" to decide the sole winner
     my $box = Algorithm::Voting::Plurality->new();
 
     # add ballots to the box
-    for my $ballot (ballots()) {
+    for my $ballot (get_ballot()) {
         $box->add( $ballot );
     }
 
@@ -90,7 +90,10 @@ sub new {
     return $self;
 }
 
-=head2 candidates
+=head2 $box->candidates
+
+Returns a list containing the candidate names used in the construction of the
+ballot box.
 
 =cut
 
@@ -102,12 +105,18 @@ sub candidates {
     return;
 }
 
-=head2 add
+=head2 $box->add($ballot)
+
+C<$ballot> can be any object that we can call method C<candidate()> on.
 
 =cut
 
 sub add {
-    my ($self, $ballot) = @_;
+    my $self = shift;
+    my %valid = (
+        can => [ 'candidate' ],
+    );
+    my ($ballot) = validate_pos(@_, \%valid);
     $self->validate_ballot($ballot);
     $self->increment_tally($ballot->candidate);
     return $self->count;
