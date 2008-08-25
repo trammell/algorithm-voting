@@ -7,20 +7,6 @@ use Test::More 'no_plan';
 
 use_ok('Algorithm::Voting::Sortition');
 
-# verify that "make_key" works correctly
-{
-    my $x = [1,2,3];
-    my $y = [1,3,2];
-    my @tests = (
-        [ [ $x ] => q(1.2.3./) ],
-    );
-    foreach my $i (0 .. $#tests) {
-        my @in = @{ $tests[$i][0] };
-        my $out = $tests[$i][1];
-        is(Algorithm::Voting::Sortition->make_key(@in),$out);
-    }
-}
-
 #   1. John         11. Pollyanna       21. Pride
 #   2. Mary         12. Pendragon       22. Sloth
 #   3. Bashful      13. Pandora         23. Envy
@@ -40,19 +26,14 @@ my @c = qw/
     Pride Sloth Envy Anger Kasczynski
 /;
 
-# http://tools.ietf.org/html/rfc3797#section-6
-my @source = (
-    "9319",
-    [ qw/ 2 5 12 8 10 / ],
-    [ qw/ 9 18 26 34 41 45 /],
+my $ks = q(9319./2.5.8.10.12./9.18.26.34.41.45./);
+
+# return 10 winners from the candidate pool, using key $ks
+my $box = Algorithm::Voting::Sortition->new(candidates => \@c, n => 10, keystring => $ks);
+
+my @rfc_result = qw(
+    Lee Doc Mary Charity Kasczynski
+    Envy Sneazy Anger Chastity Pandora
 );
-
-my $key = q(9319./2.5.8.10.12./9.18.26.34.41.45./);
-
-is(Algorithm::Voting::Sortition->make_key(@source), $key);
-
-# return 5 winners, using key $key
-my $box = Algorithm::Voting::Sortition->new(candidates => \@c, key => $key, n => 5);
-
-warn $box->result->as_string;
+is_deeply($box->result,\@rfc_result);
 

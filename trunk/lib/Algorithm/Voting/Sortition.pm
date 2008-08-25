@@ -4,9 +4,10 @@ package Algorithm::Voting::Sortition;
 use strict;
 use warnings;
 use Scalar::Util 'reftype';
-use Digest::MD5 'md5_hex';
+use Digest::MD5;
 use Math::BigInt;
 use Params::Validate 'validate';
+use base 'Class::Accessor::Fast';
 
 =pod
 
@@ -17,17 +18,21 @@ Nominations Committee (NomCom) Random Selection"
 
 =head1 SYNOPSIS
 
+Assuming we want to choose two of our favorite Flintstones pals:
+
     use Algorithm::Voting::Sortition;
-    my @cand = qw/ fred wilma barney betty /;
-    my $box = Algorithm::Voting::Sortition->new(candidates => \@cand);
-    my @keysrc = (
-        [32,40,43,49,53,21],    # powerball numbers on 9 Aug 2008
-        11,                     # number of gold medals Phelps has won
-        "W 4-1",                # score of Twins game on 8 Aug 2008
+    my @candidates = qw/ fred wilma barney betty pebbles bamm-bamm /;
+    my @keysource = (
+        [32,40,43,49,53,21],  # 8/9/08 powerball numbers
+        "W 4-1",              # final score of 8/8/08 Twins game
     );
-    my $key = $box->make_key(@keysrc)
-    print "Using key: '$key'\n";
-    print $box->result($key)->as_string;
+    my $race = Algorithm::Voting::Sortition->new(
+        candidates => \@candidates,
+        source     => \@keysource,
+        n          => 2,
+    );
+    printf "Key string is: '%s'\n", $race->keystring;
+    print $race->as_string;
 
 =head1 DESCRIPTION
 
@@ -58,6 +63,7 @@ sub new {
         n          => { default => -1 },
         source     => 0,
         keystring  => 0,
+        formatter  => { default => __PACKAGE__ },
     );
     my %args = validate(@_, \%valid);
     return bless \%args, $class;
@@ -73,54 +79,101 @@ sub candidates {
     return @{ $_[0]->{candidates} };
 }
 
-=head2 $obj->keystring([@source])
+=head2 $obj->n
 
-Stringify elements of C<@source> to create a master "key string".
+Returns the number of candidates to choose from the master list.
+
+=cut
+
+sub n {
+    my $self = shift;
+    if ($self->{n} < 1) {
+        $self->{n} = scalar($self->candidates);
+    }
+    return $self->{n};
+}
+
+=head2 $obj->keystring()
+
+Uses the current value of C<< $self->source >> to create and cache a master
+"key string".
 
 =cut
 
 sub keystring {
-    my ($self, @source) = @_;
-    my $key;
-    for my $s (@source) {
-        if (reftype($s) && reftype($s) eq 'ARRAY') {
-            $key .= $self->_compound_key(@$s);
-        }
-        else {
-            $key .= "$s./";
-        }
+    my $self = shift;
+    unless (exists $self->{keystring}) {
+        $self->{keystring} = $self->make_keystring($self->source);
     }
-    return $key;
+    return $self->{keystring};
 }
 
-sub _compound_key {
-    my ($self, @source) = @_;
-    @source = sort { $a <=> $b } @source;
-    my $key;
-    $key .= "$_." for @source;
-    return "$key/";
+=head2 $obj->make_keystring(@source)
+
+Creates a "key string" from the input values in C<@source>.
+
+=cut
+
+sub make_keystring {
+    my ($self,@source) = @_;
+    return join q(), map { $self->stringify($_) . q(/) } @source;
+}
+
+=head2 $obj->stringify($thing)
+
+=cut
+
+sub stringify {
+    my ($self, $thing) = @_;
+    if (reftype($thing) && reftype($thing) eq 'ARRAY') {
+        my @x = sort { $a <=> $b } @$thing;
+        return join q(), map "$_.", @x;
+    }
+    else {
+        return "$thing.";
+    }
+}
+
+=head2 $obj->digest($n)
+
+Calculates and returns the I<n>th digest of the current keystring.  This is
+done by bracketing C<< $obj->keystring >> with a stringified version of C<$n>,
+then calculating the MD5 digest of the result.
+
+It is not necessary to use the MD5 checksum
+
+There is nothing inherent in the Sortition algorithm.
+
+a hexidecimal string containing the MD5 digest of
+C<< $obj->keystring >> bracketed with a stringified version of C<$n>.
+
+Returns the value of C<$n>, but C<pack()>ed into a little-endian, 2-byte short
+int.
+
+FIXME: find a coherent statement to make about the digest() method
+
+=cut
+
+sub digest {
+    my ($self, $n) = @_;
+    my $pre = pack("n",$n);     # "n" => little-endian, 2-byte ("short int")
+    my $hex = Digest::MD5::md5_hex($pre . $self->keystring . $pre);
 }
 
 =head2 $obj->seq
 
-Generates a sequence of integers based on the MD5 sum of the key.  These
-integers are used to choose the winners from the candidate pool.
+Returns a list of integers based on the dynamic keystring digest.  These
+integers will be used will be used to choose the winners from the candidate
+pool.
 
 =cut
 
 sub seq {
     my $self = shift;
-    my $n = ($self->{n} < 1) ? scalar($self->candidates) : $self->{n};
     map {
-        my $p = $self->prefix($_);
-        my $hex = md5_hex($p . $self->keystring . $p);
-        my $bi = Math::Bigint->new("0x${hex}");
-    } 1 .. $n;
-}
-
-sub prefix {
-    my ($self,$n) = @_;
-    return pack("n",$n);  # little-endian, 2-byte ("short int")
+        my $hex = $self->digest($_);
+        Math::BigInt->new("0x${hex}");
+    } 0 .. $self->n - 1;
 }
 
 =head2 $obj->result
@@ -132,7 +185,7 @@ Returns the data structure containing the contest results.
 sub result {
     my $self = shift;
     unless (exists $self->{result}) {
-	$self->make_result;
+        $self->make_result;
     }
     return $self->{result};
 }
@@ -148,7 +201,14 @@ sub make_result {
         my $choice = $i
 
 
+    my @result;
+    while ($n) {
+        my $i = shift @seq;
+        push @result, $i->bmod($n);
+        --$n;
     }
+    my @c = scalar($self->candidates);
+    return @c[@result];
     my @c = $self->candidates;
     my @result = @c[ @indices ];
     $self->{result} = \@result;
@@ -165,6 +225,58 @@ sub as_string {
     my $fmt_class = $self->formatter; 
     $fmt_class->as_string($self->result);
 }
+
+=pod
+
+=head1 LIMITATIONS
+
+=head1 SUBCLASSING
+
+The core elements of the Sortition voting algorithm are the following:
+
+1. choice of candidates
+2. agreement on source of entropy
+3. agreement on the digest function used to interpret the entropy
+
+Package C<Algorithm::Voting::Sortition> makes specific choices in these matters:
+
+    * the entropy is ... bracketed by source strings "\x00\x01", "\x00\x01", ...
+    * the digest function is MD5
+
+Other options include:
+
+    * using a different digest function, e.g. SHA1, SHA256, etc.
+    * using a different combining function to generate the chooser sequence
+
+        - XOR the position with the 
+        - stringify the position differently (e.g. use roman numerals, convert
+          to a hex string, etc.)
+
+As an example, here is a replacement digest method that uses a different digest
+function (SHA1) and a different method to index the keystring (convert the
+index to roman numerals, then 
+
+
+alternate 
+
+    package My::Sortition;
+
+    use base 'Algorithm::Voting::Sortition';
+
+    sub digest {
+        my ($self, $n) = @_;
+        use Digest::SHA1;
+        use Roman 'Roman';      # uppercase
+        my $prefix = Roman($n);
+        my $hex = Digest::SHA1::sha1_hex($prefix ^ $self->keystring);
+    }
+
+=head2 Comment on Entropy
+
+=head2 Comment on the use of the MD5 Digest Function
+
+
+=cut
 
 1;
 
