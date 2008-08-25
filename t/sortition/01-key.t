@@ -10,7 +10,7 @@ my $avs = 'Algorithm::Voting::Sortition';
 
 use_ok($avs);
 
-# verify that "keystring" works correctly
+# verify that class method "make_keystring" works correctly
 {
     my $x = [1,2,3];
     my $y = [1,3,2];
@@ -20,20 +20,8 @@ use_ok($avs);
     foreach my $i (0 .. $#tests) {
         my @in = @{ $tests[$i][0] };
         my $out = $tests[$i][1];
-        is($avs->keystring(@in),$out);
+        is($avs->make_keystring(@in),$out);
     }
-}
-
-# verify that we know how to pack the MD5 prefix correctly
-{
-    is($avs->prefix(1),"\x00\x01");
-    is($avs->prefix(2),"\x00\x02");
-    is($avs->prefix(8),"\x00\x08");
-    is($avs->prefix(31),"\x00\x1f");
-    is($avs->prefix(32),"\x00\x20");
-    is($avs->prefix(256),"\x01\x00");
-    is($avs->prefix(257),"\x01\x01");
-    is($avs->prefix(0xffff),"\xff\xff");
 }
 
 # verify example in L<http://tools.ietf.org/html/rfc3797#section-6>
@@ -44,9 +32,9 @@ use_ok($avs);
         [ qw/ 9 18 26 34 41 45 /],
     );
     my $key = q(9319./2.5.8.10.12./9.18.26.34.41.45./);
-    is ($avs->keystring(@source), $key);
+    is ($avs->make_keystring(@source), $key);
 
-    my $md5 = sub {
+    my $digest = sub {
         my $p = $avs->prefix($_[0]);
         return uc(md5_hex($p . $key . $p));
     };
