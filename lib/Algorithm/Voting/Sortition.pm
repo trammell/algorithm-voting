@@ -185,7 +185,7 @@ Returns the data structure containing the contest results.
 sub result {
     my $self = shift;
     unless (exists $self->{result}) {
-        $self->make_result;
+        $self->{result} = [ $self->make_result ];
     }
     return $self->{result};
 }
@@ -197,21 +197,16 @@ sub result {
 sub make_result {
     my $self = shift;
     my $n = $self->n;
-    for my $i ($self->seq) {
-        my $choice = $i
-
-
+    my @seq = $self->seq;
+    my @candidates = $self->candidates;
     my @result;
     while ($n) {
-        my $i = shift @seq;
-        push @result, $i->bmod($n);
-        --$n;
+        my $j = shift @seq;
+        my $i = $j->bmod($n);
+        # splice() out the chosen candidate into @result
+        push @result, splice(@candidates, $i, 1);
     }
-    my @c = scalar($self->candidates);
-    return @c[@result];
-    my @c = $self->candidates;
-    my @result = @c[ @indices ];
-    $self->{result} = \@result;
+    return @result;
 }
 
 =head2 $obj->as_string
