@@ -172,7 +172,7 @@ sub seq {
     my $self = shift;
     map {
         my $hex = $self->digest($_);
-        Math::BigInt->new("0x${hex}");
+        my $i = Math::BigInt->new("0x${hex}") or die($_ => $hex);
     } 0 .. $self->n - 1;
 }
 
@@ -202,9 +202,10 @@ sub make_result {
     my @result;
     while ($n) {
         my $j = shift @seq;
-        my $i = $j->bmod($n);
+        $j->bmod(scalar @candidates);   # modifies $j
         # splice() out the chosen candidate into @result
-        push @result, splice(@candidates, $i, 1);
+        push @result, splice(@candidates, $j, 1);
+        $n--;
     }
     return @result;
 }
