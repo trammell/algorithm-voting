@@ -8,7 +8,6 @@ use warnings;
 use base 'Class::Accessor::Fast';
 use List::Util 'sum';
 use Params::Validate qw/ validate validate_pos ARRAYREF /;
-use Algorithm::Voting::Result;
 
 __PACKAGE__->mk_accessors(qw/ tally /);
 
