@@ -2,8 +2,8 @@
 # $URL$
 
 package Algorithm::Voting::Ballot;
-
 use base 'Class::Accessor::Fast';
+use Params::Validate 'validate';
 
 __PACKAGE__->mk_accessors(qw/ candidate /);
 
@@ -28,11 +28,14 @@ Algorithm::Voting::Ballot - represents a ballot to cast in a race
 
 sub new {
     my $class = shift;
-    my $self = bless {}, $class;
     if (@_ == 1) {
-        $self->candidate($_[0]);
+        return $class->new(candidate => $_[0]);
     }
-    return $self;
+    my %valid = (
+        candidate => 0,
+    );
+    my %args = validate(@_, \%valid);
+    return bless \%args, $class;
 }
 
 1;
