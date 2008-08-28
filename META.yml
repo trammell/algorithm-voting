@@ -8,6 +8,8 @@ license: perl
 resources:
   license: http://dev.perl.org/licenses/
 requires:
+  Carp: 0
+  Class::Accessor::Fast: 0
   Data::Dumper: 0
   Digest::MD5: 0
   List::Util: 0
@@ -15,10 +17,6 @@ requires:
   Params::Validate: 0
   Scalar::Util: 0
 build_requires:
-  Carp: 0
-  Class::Accessor: 0
-  Data::Dumper: 0
-  List::Util: 0
   Module::Build::Compat: 0
   Test::Exception: 0
   Test::More: 0

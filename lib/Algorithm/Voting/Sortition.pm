@@ -21,11 +21,17 @@ Nominations Committee (NomCom) Random Selection"
 Assuming we want to choose two of our favorite Flintstones pals:
 
     use Algorithm::Voting::Sortition;
+
+    # choose a list of candidates
     my @candidates = qw/ fred wilma barney betty pebbles bamm-bamm /;
+
+    # choose a predetermined entropy source
     my @keysource = (
         [32,40,43,49,53,21],  # 8/9/08 powerball numbers
         "W 4-1",              # final score of 8/8/08 Twins game
     );
+
+    # use sortition to determine the winners
     my $race = Algorithm::Voting::Sortition->new(
         candidates => \@candidates,
         source     => \@keysource,
@@ -36,9 +42,10 @@ Assuming we want to choose two of our favorite Flintstones pals:
 
 =head1 DESCRIPTION
 
-This package implements the Sortition algorithm as described in RFC 3797,
-"Publicly Verifiable Nominations Committee (NomCom) Random Selection"
-(L<http://tools.ietf.org/html/rfc3797>):
+Sortition is a sophisticated and unbiased method for "drawing straws" or
+"casting lots".  This package implements the Sortition algorithm as described
+in RFC 3797, "Publicly Verifiable Nominations Committee (NomCom) Random
+Selection" (L<http://tools.ietf.org/html/rfc3797>):
 
 =over 4
 
@@ -47,6 +54,27 @@ that the unbiased nature of the choice is publicly verifiable.  As an example,
 the selection of the voting members of the IETF Nominations Committee (NomCom)
 from the pool of eligible volunteers is used.  Similar techniques would be
 applicable to other cases.
+
+=back
+
+The elements of the algorithm are:
+
+=over 4
+
+=item 1. a list of candidates
+
+The list of candidates is chosen first
+
+=item 2. a source of entropy
+
+In the above example, lottery numbers and sports scores are used to generate a
+random string.
+
+=item 3. a digest function
+
+A digest function (MD5 by default) is used to turn
+
+Participants must agree on the method...
 
 =back
 
@@ -81,7 +109,10 @@ sub candidates {
 
 =head2 $obj->n
 
-Returns the number of candidates to choose from the master list.
+Returns the number of candidates that are to be chosen from the master list.
+If C<n> is unspecified when the sortition object is constructed, the total
+number of candidates is used, i.e. the sortition will return a list containing
+all candidates.
 
 =cut
 
@@ -95,14 +126,20 @@ sub n {
 
 =head2 $obj->source()
 
+Mutates the entropy source to be used in the sortition.
+
+Example:
+
+    $obj->source(@entropy); # sets the entropy value
+    my @e = $obj->source;   # retrieves the entropy
+
 =cut
 
 sub source {
     my $self = shift;
-    if (@_) { $self->{source} = [ @_ ]; }
+    if (@_) { $self->{source} = \@_; }
     return @{ $self->{source} };
 }
-
 
 =head2 $obj->keystring()
 
@@ -155,6 +192,11 @@ sub stringify {
 }
 
 =head2 $class->_sort(@items)
+
+Returns a list containing the values of C<@items>, but sorted.
+
+If C<@items> contains only values that C<Scalar::Util::looks_like_number()>,
+then a numeric sort is used.
 
 =cut
 

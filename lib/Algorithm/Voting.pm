@@ -1,7 +1,7 @@
 package Algorithm::Voting;
 
-use warnings;
 use strict;
+use warnings;
 
 our $VERSION = '0.01';
 
@@ -11,13 +11,22 @@ our $VERSION = '0.01';
 
 =head1 NAME
 
-Algorithm::Voting - implementations of various voting algorithms
+Algorithm::Voting - voting algorithm implementations
 
 =head1 SYNOPSIS
 
     use Algorithm::Voting::Ballot;
-    use Algorithm::Voting::Borda;
-    my $box = Algorithm::Voting->new();
+    use Algorithm::Voting::Plurality;
+    my $box = Algorithm::Voting::Plurality->new();
+    foreach my $candidate (get_votes()) {
+        $box->add( Algorithm::Voting::Ballot->new($candidate) );
+    }
+    print $box->as_string;
+
+=head1 DESCRIPTION
+
+Modules in this package implement various voting algorithms (e.g. Plurality,
+Sortition, etc.) as well as related objects (ballots, etc.).
 
 =head1 AUTHOR
 
@@ -25,11 +34,8 @@ johntrammell@gmail.com, C<< <johntrammell at gmail.com> >>
 
 =head1 BUGS
 
-Please report any bugs or feature requests to C<bug-algorithm-voting at
-rt.cpan.org>, or through the web interface at
-L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Algorithm-Voting>.  I will be
-notified, and then you'll automatically be notified of progress on your bug as
-I make changes.
+Please report any bugs or feature requests via the Google Code web interface at
+L<http://code.google.com/p/algorithm-voting/>.
 
 =head1 SUPPORT
 
@@ -37,30 +43,8 @@ You can find documentation for this module with the perldoc command.
 
     perldoc Algorithm::Voting
 
-You can also look for information at:
-
-=over 4
-
-=item * RT: CPAN's request tracker
-
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Algorithm-Voting>
-
-=item * AnnoCPAN: Annotated CPAN documentation
-
-L<http://annocpan.org/dist/Algorithm-Voting>
-
-=item * CPAN Ratings
-
-L<http://cpanratings.perl.org/d/Algorithm-Voting>
-
-=item * Search CPAN
-
-L<http://search.cpan.org/dist/Algorithm-Voting>
-
-=back
-
-=head1 ACKNOWLEDGEMENTS
-
+You can also find up-to-date information on this project at Google Code URL
+L<http://code.google.com/p/algorithm-voting/>.
 
 =head1 COPYRIGHT & LICENSE
 

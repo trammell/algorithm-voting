@@ -15,11 +15,26 @@ Algorithm::Voting::Ballot - represents a ballot to cast in a race
 
 =head1 SYNOPSIS
 
+    use Algorithm::Voting::Ballot;
+    my $ballot = Algorithm::Voting::Ballot->new('Pedro');
+
+Or equivalently:
+
+    use Algorithm::Voting::Ballot;
+    my $ballot = Algorithm::Voting::Ballot->new(candidate => 'Pedro');
+
 =head1 DESCRIPTION
+
+Instances of this class contain the information specified on a ballot.  Expect
+this class to gain complexity as more complicated voting systems (e.g. IRV,
+Condorcet) are implemented.
 
 =head1 METHODS
 
 =head2 Algorithm::Voting::Ballot->new()
+
+Constructs a new ballot object.  Currently only suitable for indicating a
+single candidate, e.g. for Plurality ballots.
 
     # vote for Pedro
     my $ballot = Algorithm::Voting::Ballot->new('Pedro')
@@ -37,6 +52,13 @@ sub new {
     my %args = validate(@_, \%valid);
     return bless \%args, $class;
 }
+
+=head2 $ballot->candidate()
+
+Returns a scalar (presumably a string, although this is not enforced)
+containing the candidate for whom this ballot is cast.
+
+=cut
 
 1;
 
