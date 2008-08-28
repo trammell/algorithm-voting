@@ -29,7 +29,7 @@ is($box->count,5);
 
 is_deeply($box->tally, { frank => 3, mary => 2 }) or diag(Dumper($box));
 
-diag(Dumper($box->result));
-diag($box->as_string);
+#diag(Dumper($box->result));
+#diag($box->as_string);
 
 
