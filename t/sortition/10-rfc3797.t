@@ -95,5 +95,13 @@ __digests__
         Envy Sneazy Anger Chastity Pandora
     );
 
-    is_deeply($box->result, \@rfc_result) or diag(Dumper($box->result));
+    is_deeply([$box->result], \@rfc_result) or
+        diag(Dumper([$box->result]));
+
+    my $s = $box->as_string;
+    like($s, qr/1. Lee/);
+    like($s, qr/3. Mary/);
+    like($s, qr/5. Kasczynski/);
+    like($s, qr/7. Sneazy/);
+
 }

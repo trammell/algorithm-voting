@@ -3,7 +3,7 @@ package Algorithm::Voting::Sortition;
 
 use strict;
 use warnings;
-use Scalar::Util 'reftype';
+use Scalar::Util qw/reftype looks_like_number/;
 use Digest::MD5;
 use Math::BigInt;
 use Params::Validate 'validate';
@@ -93,6 +93,17 @@ sub n {
     return $self->{n};
 }
 
+=head2 $obj->source()
+
+=cut
+
+sub source {
+    my $self = shift;
+    if (@_) { $self->{source} = [ @_ ]; }
+    return @{ $self->{source} };
+}
+
+
 =head2 $obj->keystring()
 
 Uses the current value of C<< $self->source >> to create and cache a master
@@ -125,12 +136,35 @@ sub make_keystring {
 
 sub stringify {
     my ($self, $thing) = @_;
-    if (reftype($thing) && reftype($thing) eq 'ARRAY') {
-        my @x = sort { $a <=> $b } @$thing;
-        return join q(), map "$_.", @x;
+    if (reftype($thing)) {
+        if (reftype($thing) eq 'ARRAY') {
+            return join q(), map { "$_." } $self->_sort(@$thing);
+        }
+        elsif (reftype($thing) eq 'HASH') {
+            return join q(),
+                map { $_ . q(:) . $thing->{$_} . q(.) }
+                $self->_sort(keys %$thing);
+        }
+        else {
+            die "Can't stringify: $thing";
+        }
     }
     else {
         return "$thing.";
+    }
+}
+
+=head2 $class->_sort(@items)
+
+=cut
+
+sub _sort {
+    my ($class, @items) = @_;
+    if (grep { !looks_like_number($_) } @items) {
+        return sort @items;
+    }
+    else {
+        return sort { $a <=> $b } @items;
     }
 }
 
@@ -172,29 +206,23 @@ sub seq {
     my $self = shift;
     map {
         my $hex = $self->digest($_);
-        my $i = Math::BigInt->new("0x${hex}") or die($_ => $hex);
+        my $i = Math::BigInt->new("0x${hex}");
+        if ($i->is_nan) {
+            die("got invalid hex from digest($_): '$hex'");
+        }
+        $i;
     } 0 .. $self->n - 1;
 }
 
 =head2 $obj->result
 
-Returns the data structure containing the contest results.
+Returns a data structure containing the contest results.  For sortition, the
+structure is a list of candidates, with the first winner at list position 0,
+etc.
 
 =cut
 
 sub result {
-    my $self = shift;
-    unless (exists $self->{result}) {
-        $self->{result} = [ $self->make_result ];
-    }
-    return $self->{result};
-}
-
-=head2 $obj->make_result
-
-=cut
-
-sub make_result {
     my $self = shift;
     my $n = $self->n;
     my @seq = $self->seq;
@@ -212,14 +240,16 @@ sub make_result {
 
 =head2 $obj->as_string
 
-Delegates formatting to class C<< $obj->formatter >>.
+Returns the election results, formatted as a multiline string.
+
+TODO: delegate formatting to an alternate class (via C<< $obj->formatter >>?)
 
 =cut
 
 sub as_string {
     my $self = shift;
-    my $fmt_class = $self->formatter; 
-    $fmt_class->as_string($self->result);
+    my $i = 0;
+    return join q(), map { $i++; "$i. $_\n" } $self->result;
 }
 
 =pod
