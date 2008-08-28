@@ -19,7 +19,7 @@ Algorithm::Voting::Plurality - use "Plurality" to decide the sole winner
 
 =head1 SYNOPSIS
 
-    # construct the "ballot box"
+    # construct a "ballot box"
     use Algorithm::Voting::Plurality;
     my $box = Algorithm::Voting::Plurality->new();
 
@@ -92,7 +92,7 @@ sub new {
 =head2 $box->candidates
 
 Returns a list containing the candidate names used in the construction of the
-ballot box.
+ballot box.  If no candidates were specified at construction of the box,
 
 =cut
 
@@ -196,15 +196,15 @@ Returns a string containing the election results.
 
 sub as_string {
     my $self = shift;
-    my $pos = 1;
+    my $pos = 0;
     my $count = $self->count;
     my $string;
     foreach my $r ($self->result) {
+        $pos++;
         my ($n, @cand) = @$r;
         my $pct = sprintf '%.2f%%', 100 * $n / $count;
         $string .= sprintf "%3d: ", $pos;
         $string .= "@cand, $n votes ($pct)\n";
-	$pos++;
     }
     return $string;
 }
