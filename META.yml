@@ -34,8 +34,6 @@ provides:
     file: lib/Algorithm/Voting/Ballot.pm
   Algorithm::Voting::Plurality:
     file: lib/Algorithm/Voting/Plurality.pm
-  Algorithm::Voting::Result:
-    file: lib/Algorithm/Voting/Result.pm
   Algorithm::Voting::Sortition:
     file: lib/Algorithm/Voting/Sortition.pm
 generated_by: Module::Build version 0.280802
