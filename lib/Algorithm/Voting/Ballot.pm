@@ -2,6 +2,8 @@
 # $URL$
 
 package Algorithm::Voting::Ballot;
+use strict;
+use warnings;
 use base 'Class::Accessor::Fast';
 use Params::Validate 'validate';
 
