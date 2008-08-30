@@ -3,7 +3,7 @@ name: Algorithm-Voting
 version: 0.01
 author:
   - 'John Trammell <johntrammell@gmail.com>'
-abstract: implementations of various voting algorithms
+abstract: voting algorithm implementations
 license: perl
 resources:
   license: http://dev.perl.org/licenses/
@@ -34,7 +34,7 @@ provides:
     file: lib/Algorithm/Voting/Plurality.pm
   Algorithm::Voting::Sortition:
     file: lib/Algorithm/Voting/Sortition.pm
-generated_by: Module::Build version 0.280802
+generated_by: Module::Build version 0.280801
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html
   version: 1.2
