@@ -13,7 +13,7 @@ META.yml
 README
 t/00-load.t
 t/01-ballot.t
-t/99-critic.t
+t/99-perlcritic.t
 t/99-pod-coverage.t
 t/99-pod.t
 t/perlcriticrc
