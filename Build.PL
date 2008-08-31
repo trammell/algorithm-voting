@@ -22,6 +22,7 @@ my $builder = Module::Build->new(
         'constant'              => 0,
         'strict'                => 0,
         'warnings'              => 0,
+	'File::Spec'            => 0,
         'Test::More'            => 0,
         'Test::Exception'       => 0,
         'Module::Build::Compat' => 0,

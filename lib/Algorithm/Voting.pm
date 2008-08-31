@@ -17,7 +17,7 @@ Algorithm::Voting - voting algorithm implementations
 
     use Algorithm::Voting::Ballot;
     use Algorithm::Voting::Plurality;
-    my $box = Algorithm::Voting::Plurality->new();
+    my $box = Algorithm::Voting::Plurality->new();    # a ballot box
     foreach my $candidate (get_votes()) {
         $box->add( Algorithm::Voting::Ballot->new($candidate) );
     }
@@ -43,8 +43,8 @@ You can find documentation for this module with the perldoc command.
 
     perldoc Algorithm::Voting
 
-You can also find up-to-date information on this project at Google Code URL
-L<http://code.google.com/p/algorithm-voting/>.
+This project is hosted at Google Code.  You can find up-to-date information on
+this project at URL L<http://code.google.com/p/algorithm-voting/>.
 
 =head1 COPYRIGHT & LICENSE
 
