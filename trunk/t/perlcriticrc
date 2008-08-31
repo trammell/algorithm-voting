@@ -1,0 +1,3 @@
+[Bangs::ProhibitFlagComments]
+keywords = XXX TODO FIXME BUG REVIEW
+

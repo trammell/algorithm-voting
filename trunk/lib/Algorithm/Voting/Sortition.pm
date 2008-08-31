@@ -76,6 +76,8 @@ A digest function (MD5 by default) is used to turn
 
 Participants must agree on the method...
 
+FIXME
+
 =back
 
 =head1 METHODS
@@ -168,6 +170,10 @@ sub make_keystring {
 }
 
 =head2 $obj->stringify($thing)
+
+TODO
+
+XXX
 
 =cut
 
