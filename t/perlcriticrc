@@ -1,3 +1,6 @@
+
+severity = 4
+
 [Bangs::ProhibitFlagComments]
-keywords = XXX TODO FIXME BUG REVIEW
+severity=5
 
