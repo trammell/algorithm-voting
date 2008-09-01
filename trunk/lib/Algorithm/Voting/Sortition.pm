@@ -18,14 +18,14 @@ Nominations Committee (NomCom) Random Selection"
 
 =head1 SYNOPSIS
 
-Assuming we want to choose two of our favorite Flintstones pals:
+To choose two of our favorite Flintstones pals via sortition:
 
     use Algorithm::Voting::Sortition;
 
     # choose a list of candidates
     my @candidates = qw/ fred wilma barney betty pebbles bamm-bamm /;
 
-    # choose a predetermined entropy source
+    # the results of our predetermined entropy source
     my @keysource = (
         [32,40,43,49,53,21],  # 8/9/08 powerball numbers
         "W 4-1",              # final score of 8/8/08 Twins game
@@ -42,10 +42,10 @@ Assuming we want to choose two of our favorite Flintstones pals:
 
 =head1 DESCRIPTION
 
-Sortition is a sophisticated and unbiased method for "drawing straws" or
-"casting lots".  This package implements the Sortition algorithm as described
-in RFC 3797, "Publicly Verifiable Nominations Committee (NomCom) Random
-Selection" (L<http://tools.ietf.org/html/rfc3797>):
+Sortition is a provably unbiased method for "drawing straws" or "casting lots".
+This package implements the Sortition algorithm as described in RFC 3797,
+"Publicly Verifiable Nominations Committee (NomCom) Random Selection"
+(L<http://tools.ietf.org/html/rfc3797>):
 
 =over 4
 
@@ -57,7 +57,7 @@ applicable to other cases.
 
 =back
 
-The elements of the algorithm are:
+The elements of sortition are:
 
 =over 4
 
@@ -75,8 +75,6 @@ random string.
 A digest function (MD5 by default) is used to turn
 
 Participants must agree on the method...
-
-FIXME
 
 =back
 
@@ -239,7 +237,7 @@ FIXME: find a coherent statement to make about the digest() method
 sub digest {
     my ($self, $n) = @_;
     my $pre = pack("n",$n);     # "n" => little-endian, 2-byte ("short int")
-    my $hex = Digest::MD5::md5_hex($pre . $self->keystring . $pre);
+    return Digest::MD5::md5_hex($pre . $self->keystring . $pre);
 }
 
 =head2 $obj->seq
@@ -252,7 +250,7 @@ pool.
 
 sub seq {
     my $self = shift;
-    map {
+    return map {
         my $hex = $self->digest($_);
         my $i = Math::BigInt->new("0x${hex}");
         if ($i->is_nan) {
