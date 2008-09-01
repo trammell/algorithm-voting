@@ -4,3 +4,5 @@ severity = 4
 [Bangs::ProhibitFlagComments]
 severity=5
 
+[-Subroutines::RequireArgUnpacking]
+

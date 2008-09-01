@@ -130,6 +130,7 @@ Increments the tally for C<$candidate> by 1.
 sub increment_tally {
     my ($self, $candidate) = @_;
     $self->tally->{$candidate} += 1;
+    return $self->tally->{$candidate};
 }
 
 =head2 $box->validate_ballot($ballot)
