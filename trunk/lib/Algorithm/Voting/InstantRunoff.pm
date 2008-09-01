@@ -1,3 +1,6 @@
+# $Id$
+# $URL$
+
 =pod
 
 Coming soon!
