@@ -1,3 +1,6 @@
+# $Id$
+# $URL$
+
 package Algorithm::Voting;
 
 use strict;
