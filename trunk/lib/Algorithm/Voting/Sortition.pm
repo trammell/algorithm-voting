@@ -20,12 +20,15 @@ Nominations Committee (NomCom) Random Selection"
 
 =head1 SYNOPSIS
 
-To choose two of our favorite Flintstones pals via sortition:
+To choose two of our favorite Hogwarts pals via sortition:
 
     use Algorithm::Voting::Sortition;
 
     # choose a list of candidates
-    my @candidates = qw/ fred wilma barney betty pebbles bamm-bamm /;
+    my @candidates = qw/
+        Harry Hermione Ron Neville Albus
+	Severus Ginny Hagrid Fred George
+    /;
 
     # the results of our predetermined entropy source
     my @keysource = (
@@ -59,38 +62,19 @@ applicable to other cases.
 
 =back
 
-The elements of sortition are:
-
-=over 4
-
-=item 1. a list of candidates
-
-The ordering of the candidates is important, since a large number modulo the
-number of candidates will be used to choose a candidate.
-
-=item 2. a source of entropy
-
-This source of randomness is used to seed the digest function.  Common sources
-include lottery numbers and sports scores.
-
-=item 3. a marshalling algorithm
-
-The entropy sources must be combined
-The method for combining the seed
-elements in the digest
-
-=item 4. a digest function
-
-This module follows RFC 3797 and uses an MD5 digest to combine the entropy seed
-and choose winners.  Other digests are suitable.
-
-=back
-
-Once the participants agree on all the sortition elements,
-
 =head1 METHODS
 
-=head2 Algorithm::Voting::Sortition->new()
+=head2 Algorithm::Voting::Sortition->new( %args )
+
+Constructs a new sortition object.
+
+Example:
+
+    my $s = Algorithm::Voting::Sortition->new(
+        candidates => [ 'A' .. 'Z' ],
+        n          => 3,
+        source     => [ $scalar, \@array, \%hash ],
+    );
 
 =cut
 
@@ -101,7 +85,6 @@ sub new {
         n          => { default => -1 },
         source     => 0,
         keystring  => 0,
-        formatter  => { default => __PACKAGE__ },
     );
     my %args = validate(@_, \%valid);
     return bless \%args, $class;
@@ -179,11 +162,10 @@ sub make_keystring {
 
 =head2 $obj->stringify($thing)
 
-Comverts C<$thing> into a string.
+Converts C<$thing> into a string.  C<$thing> can be a scalar, an arrayref, or a
+hashref.  If C<$thing> is anything else, this method C<die()>s.
 
 =cut
-
-# XXX needs detail
 
 sub stringify {
     my ($self, $thing) = @_;
@@ -229,23 +211,10 @@ Calculates and returns the I<n>th digest of the current keystring.  This is
 done by bracketing C<< $obj->keystring >> with a "stringified" version of
 C<$n>, then calculating the MD5 digest of the result.
 
-The value returned is a 32-character string...
-
-It is not necessary to use the MD5 checksum
-
-There is nothing inherent in the Sortition algorithm.
-
-a hexidecimal string containing the MD5 digest of
-C<< $obj->keystring >> bracketed with a stringified version of C<$n>.
-
-Returns the value of C<$n>, but C<pack()>ed into a little-endian, 2-byte short
-int.
-
-FIXME: find a coherent statement to make about the digest() method
+The value returned is a 32-character string containing the checksum in
+hexadecimal format.
 
 =cut
-
-# XXX
 
 sub digest {
     my ($self, $n) = @_;
@@ -301,67 +270,15 @@ sub result {
 
 Returns the election results, formatted as a multiline string.
 
-TODO: delegate formatting to an alternate class (via C<< $obj->formatter >>?)
-
 =cut
 
 sub as_string {
     my $self = shift;
     my $i = 0;
-    return join q(), map { $i++; "$i. $_\n" } $self->result;
+    my $str = qq(Keystring: "@{[ $self->keystring]}"\n);
+    $str .= join q(), map { $i++; "$i. $_\n" } $self->result;
+    return $str;
 }
-
-=pod
-
-=head1 LIMITATIONS
-
-=head1 SUBCLASSING
-
-The core elements of the Sortition voting algorithm are the following:
-
-1. choice of candidates
-2. agreement on source of entropy
-3. agreement on the digest function used to interpret the entropy
-
-Package C<Algorithm::Voting::Sortition> makes specific choices in these matters:
-
-    * the entropy is ... bracketed by source strings "\x00\x01", "\x00\x01", ...
-    * the digest function is MD5
-
-Other options include:
-
-    * using a different digest function, e.g. SHA1, SHA256, etc.
-    * using a different combining function to generate the chooser sequence
-
-        - XOR the position with the 
-        - stringify the position differently (e.g. use roman numerals, convert
-          to a hex string, etc.)
-
-As an example, here is a replacement digest method that uses a different digest
-function (SHA1) and a different method to index the keystring (convert the
-index to roman numerals, then 
-
-
-alternate 
-
-    package My::Sortition;
-
-    use base 'Algorithm::Voting::Sortition';
-
-    sub digest {
-        my ($self, $n) = @_;
-        use Digest::SHA1;
-        use Roman 'Roman';      # uppercase
-        my $prefix = Roman($n);
-        my $hex = Digest::SHA1::sha1_hex($prefix ^ $self->keystring);
-    }
-
-=head2 Comment on Entropy
-
-=head2 Comment on the use of the MD5 Digest Function
-
-
-=cut
 
 1;
 
