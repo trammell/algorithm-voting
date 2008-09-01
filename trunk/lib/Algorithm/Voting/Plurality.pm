@@ -20,15 +20,17 @@ Algorithm::Voting::Plurality - use "Plurality" to decide the sole winner
 =head1 SYNOPSIS
 
     # construct a "ballot box"
+    use Algorithm::Voting::Ballot;
     use Algorithm::Voting::Plurality;
     my $box = Algorithm::Voting::Plurality->new();
 
     # add ballots to the box
-    for my $ballot (get_ballot()) {
-        $box->add( $ballot );
-    }
+    $box->add( Algorithm::Voting::Ballot->new('Ralph') );
+    $box->add( Algorithm::Voting::Ballot->new('Fred') );
+    # ... 
+    $box->add( Algorithm::Voting::Ballot->new('Ralph') );
 
-    # and print the result of the election
+    # and print the result
     print $box->as_string;
 
 =head1 DESCRIPTION
@@ -65,10 +67,12 @@ of the vote."
 
 =head1 METHODS
 
-=head2 Algorithm::Voting::Plurality->new()
+=head2 Algorithm::Voting::Plurality->new(%args)
 
 Constructs a "ballot box" object that will use the Plurality criterion to
-decide the winner.
+decide the winner.  Optionally, specify a list of candidates; any ballot added
+to the box that does not indicate one of the listed candidates throws an
+exception.
 
 Example:
 
@@ -92,7 +96,8 @@ sub new {
 =head2 $box->candidates
 
 Returns a list containing the candidate names used in the construction of the
-ballot box.  If no candidates were specified at construction of the box,
+ballot box.  If no candidates were specified at construction of the box, the
+empty list is returned.
 
 =cut
 
@@ -101,20 +106,19 @@ sub candidates {
     if ($self->{candidates}) {
         return @{ $self->{candidates} };
     }
-    return;
+    return ();
 }
 
 =head2 $box->add($ballot)
 
-C<$ballot> can be any object that we can call method C<candidate()> on.
+Add C<$ballot> to the box.  C<$ballot> can be any object that we can call
+method C<candidate()> on.
 
 =cut
 
 sub add {
     my $self = shift;
-    my %valid = (
-        can => [ 'candidate' ],
-    );
+    my %valid = ( can => [ 'candidate' ], );
     my ($ballot) = validate_pos(@_, \%valid);
     $self->validate_ballot($ballot);
     $self->increment_tally($ballot->candidate);
@@ -135,7 +139,7 @@ sub increment_tally {
 
 =head2 $box->validate_ballot($ballot)
 
-If this election is limited to a list of valid candidates, this method will
+If this election is limited to a specific list of candidates, this method will
 C<die()> if the candidate on C<$ballot> is not one of them.
 
 =cut
@@ -168,9 +172,17 @@ sub count {
 The result is a "digested" version of the ballot tally, ordered by the number
 of ballots cast for a candidate.
 
-Returns a list of arrayrefs of the form C<< [ @candidates, $n ] >> where
-C<@candidates> is a list of candidates, and C<$n> is the number of ballots
-cast.
+This method returns a list of arrayrefs, each of the form C<[$n, @candidates]>,
+and sorted by decreasing C<$n>.  Candidates "tied" with the same number of
+votes are lumped together.
+
+For example, an election with three candidates A, B, and C, getting 100, 200,
+and 100 votes respectively, would generate a result structure like this:
+
+    [
+        [ 200, "B" ],
+        [ 100, "A", "C" ],
+    ]
 
 =cut
 
