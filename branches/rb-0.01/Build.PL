@@ -19,7 +19,6 @@ my $builder = Module::Build->new(
     },
     build_requires => {
         'base'                  => 0,
-        'constant'              => 0,
         'strict'                => 0,
         'warnings'              => 0,
 	'File::Spec'            => 0,
