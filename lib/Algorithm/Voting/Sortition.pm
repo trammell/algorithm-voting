@@ -1,5 +1,5 @@
 # $Id$
-# $URL:$
+# $URL$
 
 package Algorithm::Voting::Sortition;
 
@@ -44,9 +44,9 @@ To choose two of our favorite Flintstones pals via sortition:
 
 =head1 DESCRIPTION
 
-Sortition is a provably unbiased method for "drawing straws" or "casting lots".
-This package implements the Sortition algorithm as described in RFC 3797,
-"Publicly Verifiable Nominations Committee (NomCom) Random Selection"
+Sortition is an unbiased method for "drawing straws" or "casting lots".  This
+package implements the Sortition algorithm as described in RFC 3797, "Publicly
+Verifiable Nominations Committee (NomCom) Random Selection"
 (L<http://tools.ietf.org/html/rfc3797>):
 
 =over 4
@@ -65,20 +65,28 @@ The elements of sortition are:
 
 =item 1. a list of candidates
 
-The list of candidates is chosen first
+The ordering of the candidates is important, since a large number modulo the
+number of candidates will be used to choose a candidate.
 
 =item 2. a source of entropy
 
-In the above example, lottery numbers and sports scores are used to generate a
-random string.
+This source of randomness is used to seed the digest function.  Common sources
+include lottery numbers and sports scores.
 
-=item 3. a digest function
+=item 3. a marshalling algorithm
 
-A digest function (MD5 by default) is used to turn
+The entropy sources must be combined
+The method for combining the seed
+elements in the digest
 
-Participants must agree on the method...
+=item 4. a digest function
+
+This module follows RFC 3797 and uses an MD5 digest to combine the entropy seed
+and choose winners.  Other digests are suitable.
 
 =back
+
+Once the participants agree on all the sortition elements,
 
 =head1 METHODS
 
@@ -171,11 +179,11 @@ sub make_keystring {
 
 =head2 $obj->stringify($thing)
 
-TODO
-
-XXX
+Comverts C<$thing> into a string.
 
 =cut
+
+# XXX needs detail
 
 sub stringify {
     my ($self, $thing) = @_;
@@ -199,10 +207,9 @@ sub stringify {
 
 =head2 $class->_sort(@items)
 
-Returns a list containing the values of C<@items>, but sorted.
-
-If C<@items> contains only values that C<Scalar::Util::looks_like_number()>,
-then a numeric sort is used.
+Returns a list containing the values of C<@items>, but sorted.  Sorts
+numerically if C<@items> contains only numbers (according to
+C<Scalar::Util::looks_like_number()>), otherwise sorts lexically.
 
 =cut
 
@@ -219,8 +226,10 @@ sub _sort {
 =head2 $obj->digest($n)
 
 Calculates and returns the I<n>th digest of the current keystring.  This is
-done by bracketing C<< $obj->keystring >> with a stringified version of C<$n>,
-then calculating the MD5 digest of the result.
+done by bracketing C<< $obj->keystring >> with a "stringified" version of
+C<$n>, then calculating the MD5 digest of the result.
+
+The value returned is a 32-character string...
 
 It is not necessary to use the MD5 checksum
 
@@ -235,6 +244,8 @@ int.
 FIXME: find a coherent statement to make about the digest() method
 
 =cut
+
+# XXX
 
 sub digest {
     my ($self, $n) = @_;
