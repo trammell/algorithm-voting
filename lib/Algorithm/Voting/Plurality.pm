@@ -203,7 +203,7 @@ sub result {
 
 =head2 $box->as_string
 
-Returns a string containing the election results.
+Returns a string summarizing the election results.
 
 =cut
 
