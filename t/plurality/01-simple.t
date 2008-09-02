@@ -29,11 +29,13 @@ is($box->count,5);
 
 is_deeply($box->tally, { frank => 3, mary => 2 }) or diag(Dumper($box));
 
+#diag(Dumper($box->result));
+#diag($box->as_string);
+
 is_deeply([$box->result], [[3, 'frank'], [2, 'mary']],'known result')
     or diag(Dumper([$box->result]));
 
 my $s = $box->as_string;
-
 like($s, qr/1: frank, 3 votes/);
 like($s, qr/2: mary, 2 votes/);
 
