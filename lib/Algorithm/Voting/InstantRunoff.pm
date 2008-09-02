@@ -20,15 +20,20 @@ Algorithm::Voting::InstantRunoff - implement instant runoff voting
 =head1 SYNOPSIS
 
     # construct a "ballot box"
-    use Algorithm::Voting::Ballot;
     use Algorithm::Voting::InstantRunoff;
-    my $box = Algorithm::Voting::InstantRunoff->new();
+    my @c = qw/ Abe Ben Cal Dan Eve /;
+    my $box = Algorithm::Voting::InstantRunoff->new(candidates => \@c);
 
-    # add ballots to the box
-    $box->add( Algorithm::Voting::Ballot->new('Ralph') );
-    $box->add( Algorithm::Voting::Ballot->new('Fred') );
-    # ... 
-    $box->add( Algorithm::Voting::Ballot->new('Ralph') );
+    use Algorithm::Voting::Ballot;
+
+    # add ballots to the box...
+    # add ballot with ranked candidates as arrayref
+    $box->add( Algorithm::Voting::Ballot->new(['Abe','Ben','Cal']) );
+    $box->add( Algorithm::Voting::Ballot->new(['Cal','Dan']) );
+    $box->add( Algorithm::Voting::Ballot->new(['Cal','Eve']) );
+
+    # or add ballot with single (unranked) candidate
+    $box->add( Algorithm::Voting::Ballot->new('Cal') );
 
     # and print the result
     print $box->as_string;
@@ -97,8 +102,20 @@ sub add {
     my %valid = ( can => [ 'candidate' ], );
     my ($ballot) = validate_pos(@_, \%valid);
     $self->validate_ballot($ballot);
-    $self->increment_tally($ballot->candidate);
+    $self->increment_key($self->tally, $ballot->ranked_candidates);
     return $self->count;
+}
+
+sub increment_key {
+    my ($self, $hashref, @key) = @_;
+    my $h = $hashref;
+    foreach my $k (@key) {
+        unless ($h->{$k}) {
+            $h->{$k} = {};
+        }
+        $h = $h->{$k};
+    }
+    $h->{q()} += 1;
 }
 
 =head2 $box->increment_tally($candidate)
@@ -196,6 +213,20 @@ sub as_string {
         $string .= "@cand, $n votes ($pct)\n";
     }
     return $string;
+}
+
+=head2 $box->has_majority_winner()
+
+Returns a true value if 
+
+=cut
+
+sub has_majority_winner {
+    my $self = shift;
+
+
+
+    return undef;
 }
 
 1;
