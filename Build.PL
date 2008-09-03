@@ -8,6 +8,7 @@ my $builder = Module::Build->new(
     dist_author       => 'John Trammell <johntrammell@gmail.com>',
     dist_version_from => 'lib/Algorithm/Voting.pm',
     requires => {
+        'perl'                  => 5.008,
         'Carp'                  => 0,
         'Class::Accessor::Fast' => 0,
         'Data::Dumper'          => 0,
