@@ -6,10 +6,9 @@ use warnings;
 use Test::More 'no_plan';
 use Test::Exception;
 use Data::Dumper;
+use Algorithm::Voting::InstantRunoff;
 
 my $avi = 'Algorithm::Voting::InstantRunoff';
-
-use_ok($avi);
 
 {
     my %hash;
@@ -18,6 +17,6 @@ use_ok($avi);
     $avi->increment_key(\%hash, ('a'));
     $avi->increment_key(\%hash, ('a' .. 'b'));
     $avi->increment_key(\%hash, ('a' .. 'c'));
-    diag(Dumper(\%hash));
+#   diag(Dumper(\%hash));
 }
 
