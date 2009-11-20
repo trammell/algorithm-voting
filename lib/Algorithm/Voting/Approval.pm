@@ -1,8 +1,12 @@
 # $Id$
-# $URL$
 
 =pod
 
-Coming soon!
+=head1 NAME
+
+Algorithm::Voting::Approval -
 
 =cut
+
+
+

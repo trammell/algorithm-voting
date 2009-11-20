@@ -4,11 +4,6 @@ use File::Spec;
 use Test::More;
 use English qw(-no_match_vars);
 
-unless ($ENV{TEST_AUTHOR}) {
-    my $msg = 'Author test.  Set $ENV{TEST_AUTHOR} to a true value to run.';
-    plan(skip_all => $msg);
-}
-
 eval "use Test::Perl::Critic (-severity => 1);";
 
 if ($EVAL_ERROR) {

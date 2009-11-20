@@ -44,15 +44,15 @@ From L<http://en.wikipedia.org/wiki/Instant_runoff_voting>:
 
 =over 4
 
-Instant-runoff voting (IRV) is a voting system used for single-winner elections
-in which voters have one vote and rank candidates in order of preference. If no
-candidate receives a majority of first preference rankings, the candidate with
-the fewest number of votes is eliminated and that candidate's votes
-redistributed to the voters' next preferences among the remaining candidates.
-This process is repeated until one candidate has a majority of votes among
-candidates not eliminated. The term "instant runoff" is used because IRV is
-said to simulate a series of run-off elections tallied in rounds, as in an
-exhaustive ballot election.
+Instant-runoff voting (IRV) is a voting system used for single-winner
+elections in which voters have one vote and rank candidates in order of
+preference. If no candidate receives a majority of first preference
+rankings, the candidate with the fewest number of votes is eliminated and
+that candidate's votes redistributed to the voters' next preferences among
+the remaining candidates.  This process is repeated until one candidate has
+a majority of votes among candidates not eliminated. The term "instant
+runoff" is used because IRV is said to simulate a series of run-off
+elections tallied in rounds, as in an exhaustive ballot election.
 
 =back
 
@@ -96,7 +96,6 @@ method C<candidate()> on.
 
 =cut
 
-# FIXME
 sub add {
     my $self = shift;
     my %valid = ( can => [ 'candidate' ], );
@@ -105,6 +104,10 @@ sub add {
     $self->increment_key($self->tally, $ballot->ranked_candidates);
     return $self->count;
 }
+
+=head2 $class->increment_key(\%hash,@key)
+
+=cut
 
 sub increment_key {
     my ($self, $hashref, @key) = @_;
@@ -116,6 +119,7 @@ sub increment_key {
         $h = $h->{$k};
     }
     $h->{q()} += 1;
+    return;
 }
 
 =head2 $box->increment_tally($candidate)
@@ -217,7 +221,7 @@ sub as_string {
 
 =head2 $box->has_majority_winner()
 
-Returns a true value if 
+Returns a true value if
 
 =cut
 
@@ -226,7 +230,7 @@ sub has_majority_winner {
 
 
 
-    return undef;
+    return;
 }
 
 1;

@@ -1,5 +1,4 @@
 # $Id$
-# $URL$
 
 package Algorithm::Voting::Sortition;
 
@@ -27,7 +26,7 @@ To choose two of our favorite Hogwarts pals via sortition:
     # choose a list of candidates
     my @candidates = qw/
         Harry Hermione Ron Neville Albus
-	Severus Ginny Hagrid Fred George
+        Severus Ginny Hagrid Fred George
     /;
 
     # the results of our predetermined entropy source
@@ -47,18 +46,18 @@ To choose two of our favorite Hogwarts pals via sortition:
 
 =head1 DESCRIPTION
 
-Sortition is an unbiased method for "drawing straws" or "casting lots".  This
-package implements the Sortition algorithm as described in RFC 3797, "Publicly
-Verifiable Nominations Committee (NomCom) Random Selection"
+Sortition is an unbiased method for "drawing straws" or "casting lots".
+This package implements the Sortition algorithm as described in RFC 3797,
+"Publicly Verifiable Nominations Committee (NomCom) Random Selection"
 (L<http://tools.ietf.org/html/rfc3797>):
 
 =over 4
 
 This document describes a method for making random selections in such a way
-that the unbiased nature of the choice is publicly verifiable.  As an example,
-the selection of the voting members of the IETF Nominations Committee (NomCom)
-from the pool of eligible volunteers is used.  Similar techniques would be
-applicable to other cases.
+that the unbiased nature of the choice is publicly verifiable.  As an
+example, the selection of the voting members of the IETF Nominations
+Committee (NomCom) from the pool of eligible volunteers is used.  Similar
+techniques would be applicable to other cases.
 
 =back
 
@@ -70,6 +69,7 @@ Constructs a new sortition object.
 
 Example:
 
+    # choose three winners from the alphabet
     my $s = Algorithm::Voting::Sortition->new(
         candidates => [ 'A' .. 'Z' ],
         n          => 3,
@@ -102,10 +102,10 @@ sub candidates {
 
 =head2 $obj->n
 
-Returns the number of candidates that are to be chosen from the master list.
-If C<n> is unspecified when the sortition object is constructed, the total
-number of candidates is used, i.e. the sortition will return a list containing
-all candidates.
+Returns the number of candidates that are to be chosen from the master
+list.  If C<n> is unspecified when the sortition object is constructed, the
+total number of candidates is used, i.e. the sortition will return a list
+containing all candidates.
 
 =cut
 
@@ -162,8 +162,8 @@ sub make_keystring {
 
 =head2 $obj->stringify($thing)
 
-Converts C<$thing> into a string.  C<$thing> can be a scalar, an arrayref, or a
-hashref.  If C<$thing> is anything else, this method C<die()>s.
+Converts C<$thing> into a string.  C<$thing> can be a scalar, an arrayref,
+or a hashref.  If C<$thing> is anything else, this method C<die()>s.
 
 =cut
 
@@ -198,10 +198,12 @@ C<Scalar::Util::looks_like_number()>), otherwise sorts lexically.
 sub _sort {
     my ($class, @items) = @_;
     if (grep { !looks_like_number($_) } @items) {
-        return sort @items;
+        @items = sort @items;
+        return @items;
     }
     else {
-        return sort { $a <=> $b } @items;
+        @items = sort { $a <=> $b } @items;
+        return @items;
     }
 }
 
@@ -244,9 +246,9 @@ sub seq {
 
 =head2 $obj->result
 
-Returns a data structure containing the contest results.  For sortition, the
-structure is a list of candidates, with the first winner at list position 0,
-etc.
+Returns a data structure containing the contest results.  For sortition,
+the structure is a list of candidates, with the first winner at list
+position 0, etc.
 
 =cut
 
