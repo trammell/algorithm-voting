@@ -13,9 +13,10 @@ requires:
   Data::Dumper: 0
   Digest::MD5: 0
   List::Util: 0
-  Math::BigInt: 0
+  Math::BigInt: 1.2
   Params::Validate: 0
   Scalar::Util: 0
+  perl: 5.008
 build_requires:
   File::Spec: 0
   Module::Build::Compat: 0
@@ -31,6 +32,8 @@ provides:
     version: 0.01
   Algorithm::Voting::Ballot:
     file: lib/Algorithm/Voting/Ballot.pm
+  Algorithm::Voting::InstantRunoff:
+    file: lib/Algorithm/Voting/InstantRunoff.pm
   Algorithm::Voting::Plurality:
     file: lib/Algorithm/Voting/Plurality.pm
   Algorithm::Voting::Sortition:

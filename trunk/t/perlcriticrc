@@ -9,7 +9,7 @@ severity=5
 
 [Miscellanea::RequireRcsKeywords]
 severity=5
-keywords = Id URL
+keywords = Id
 
 [-Subroutines::RequireArgUnpacking]
 

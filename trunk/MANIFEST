@@ -1,3 +1,4 @@
+bin/suffrage
 Build.PL
 Changes
 lib/Algorithm/Voting.pm
@@ -13,9 +14,12 @@ META.yml
 README
 t/00-load.t
 t/01-ballot.t
-t/99-perlcritic.t
-t/99-pod-coverage.t
+t/97-perlcritic.t
+t/98-pod-coverage.t
 t/99-pod.t
+t/irv/01-key.t
+t/irv/10-burlington.t
+t/irv/2006-Burlington-VT-mayor.txt.gz
 t/perlcriticrc
 t/plurality/01-simple.t
 t/plurality/02-restricted.t
